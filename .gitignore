@@ -1,0 +1,11 @@
+bin/
+obj/
+.env
+.DS_Store
+*.user
+.vs/
+CLAUDE.md
+DESIGN.md
+AGENTS.md
+.gitnexus/
+.claude/
