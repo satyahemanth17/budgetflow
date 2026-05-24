@@ -66,7 +66,7 @@ Cloud-native expense tracking REST + GraphQL API built with C# .NET 8, demonstra
 ```bash
 docker-compose up --build
 ```
-API available at `http://localhost:5000/swagger`
+API available at `http://localhost:5001/swagger`
 
 ### Run locally
 ```bash
@@ -95,11 +95,12 @@ cd src/BudgetFlow.Functions && func start
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | /api/auth/token | Get JWT token |
+| POST | /api/auth/token | Get JWT token (returns `token` + `userId`) |
 | GET | /api/expenses/{id} | Get expense by ID |
 | GET | /api/expenses/user/{userId} | List user expenses |
 | POST | /api/expenses | Create expense |
 | DELETE | /api/expenses/{id} | Soft-delete expense |
+| POST | /api/budgets | Create budget |
 | GET | /api/budgets/{id}/summary | Get budget summary |
 | PUT | /api/budgets/{id}/limit | Update budget limit |
 | GET | /graphql | GraphQL endpoint (Banana Cake Pop UI) |
@@ -111,7 +112,7 @@ The `/api/auth/token` stub accepts:
 ```json
 { "email": "demo@budgetflow.com", "password": "demo123" }
 ```
-Use the returned JWT as `Authorization: Bearer <token>` on all other endpoints.
+The response includes `token` (JWT) and `userId` (Guid). Use the token as `Authorization: Bearer <token>` on all other endpoints.
 
 ## ExpenseCategory Values
 
