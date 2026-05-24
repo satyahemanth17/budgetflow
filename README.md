@@ -1,5 +1,9 @@
 # BudgetFlow
 
+![CI](https://github.com/satyahemanth17/budgetflow/actions/workflows/ci.yml/badge.svg)
+![.NET](https://img.shields.io/badge/.NET-8.0-purple)
+![License](https://img.shields.io/badge/license-MIT-blue)
+
 Cloud-native expense tracking REST + GraphQL API built with C# .NET 8, demonstrating Clean Architecture, Entity Framework Core, Redis, Azure Functions, HotChocolate GraphQL, and Kubernetes.
 
 ## Architecture
@@ -18,7 +22,7 @@ Cloud-native expense tracking REST + GraphQL API built with C# .NET 8, demonstra
 └──────────────┬────────────────────────────┬─────────────────┘
                │ implements                  │ depends on
 ┌──────────────▼──────────┐   ┌─────────────▼───────────────┐
-│  BudgetFlow.Infra        │   │    BudgetFlow.Domain          │
+│  BudgetFlow.Infrastructure  │   │    BudgetFlow.Domain       │
 │  EF Core · SQL Server    │   │  Entities: User, Budget,      │
 │  Redis · JWT · Repos     │   │  Expense, BudgetAlert         │
 │  UnitOfWork · Migrations │   │  Enums: ExpenseCategory,      │
@@ -82,6 +86,11 @@ cd src/BudgetFlow.API && dotnet run
 dotnet test
 ```
 
+### Run Azure Functions locally
+```bash
+cd src/BudgetFlow.Functions && func start
+```
+
 ## API Endpoints
 
 | Method | Endpoint | Description |
@@ -96,9 +105,21 @@ dotnet test
 | GET | /graphql | GraphQL endpoint (Banana Cake Pop UI) |
 | GET | /swagger | Swagger UI |
 
+## Demo Credentials
+
+The `/api/auth/token` stub accepts:
+```json
+{ "email": "demo@budgetflow.com", "password": "demo123" }
+```
+Use the returned JWT as `Authorization: Bearer <token>` on all other endpoints.
+
+## ExpenseCategory Values
+
+`Food` · `Transport` · `Housing` · `Healthcare` · `Entertainment` · `Shopping` · `Utilities` · `Other`
+
 ## Business Rules
 
 - All entities use soft delete (`IsDeleted = true`, never hard delete)
-- Budget alert created when spending reaches **80%** of monthly limit
-- Expense blocked when it would **exceed** the monthly limit
-- `SpendingPercentage = CurrentSpending / MonthlyLimit * 100` (2 decimal precision)
+- Budget alert (`AlertStatus.Pending`) created when spending reaches **80%** of monthly limit
+- Expense creation blocked when it would **exceed** the monthly limit
+- `SpendingPercentage = Math.Round(CurrentSpending / MonthlyLimit * 100, 2)`
