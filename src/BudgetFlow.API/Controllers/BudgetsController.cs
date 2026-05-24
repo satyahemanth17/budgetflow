@@ -14,6 +14,13 @@ public class BudgetsController : ControllerBase
 
     public BudgetsController(BudgetService budgetService) => _budgetService = budgetService;
 
+    [HttpPost]
+    public async Task<ActionResult<BudgetDto>> CreateBudget([FromBody] CreateBudgetRequest request)
+    {
+        var budget = await _budgetService.CreateBudgetAsync(request);
+        return CreatedAtAction(nameof(GetSummary), new { id = budget.Id }, budget);
+    }
+
     [HttpGet("{id}/summary")]
     public async Task<ActionResult<BudgetDto>> GetSummary(Guid id) =>
         Ok(await _budgetService.GetBudgetSummaryAsync(id));
