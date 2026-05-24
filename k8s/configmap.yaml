@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: budgetflow-config
+  namespace: default
+data:
+  ASPNETCORE_ENVIRONMENT: "Production"
+  Jwt__Issuer: "BudgetFlow"
+  Jwt__Audience: "BudgetFlowUsers"
