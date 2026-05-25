@@ -43,7 +43,7 @@ public class ExpenseServiceTests
         };
 
         _budgetRepo
-            .Setup(r => r.GetByCategoryAsync(userId, ExpenseCategory.Food, default))
+            .Setup(r => r.GetByIdAsync(budget.Id, default))
             .ReturnsAsync(budget);
         _budgetRepo
             .Setup(r => r.UpdateAsync(It.IsAny<Budget>(), default))
@@ -60,6 +60,7 @@ public class ExpenseServiceTests
         var request = new CreateExpenseRequest
         {
             UserId = userId,
+            BudgetId = budget.Id,
             Description = "Groceries",
             Amount = 50m,
             Category = ExpenseCategory.Food,
@@ -88,13 +89,14 @@ public class ExpenseServiceTests
         };
 
         _budgetRepo
-            .Setup(r => r.GetByCategoryAsync(userId, ExpenseCategory.Food, default))
+            .Setup(r => r.GetByIdAsync(budget.Id, default))
             .ReturnsAsync(budget);
 
         var service = new ExpenseService(_uow.Object, _mapper.Object);
         var request = new CreateExpenseRequest
         {
             UserId = userId,
+            BudgetId = budget.Id,
             Description = "Expensive item",
             Amount = 20m,
             Category = ExpenseCategory.Food,
