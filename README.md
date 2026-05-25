@@ -122,5 +122,5 @@ The response includes `token` (JWT) and `userId` (Guid). Use the token as `Autho
 
 - All entities use soft delete (`IsDeleted = true`, never hard delete)
 - Budget alert (`AlertStatus.Pending`) created when spending reaches **80%** of monthly limit
-- Expense creation blocked when it would **exceed** the monthly limit
+- Expense creation blocked when it would **exceed** the monthly limit (requires `budgetId` in request body)
 - `SpendingPercentage = Math.Round(CurrentSpending / MonthlyLimit * 100, 2)`
