@@ -19,16 +19,22 @@ public class ExpenseService
 
     public async Task<ExpenseDto> CreateExpenseAsync(CreateExpenseRequest request)
     {
-        var budget = await _unitOfWork.Budgets.GetByCategoryAsync(request.UserId, request.Category);
-        if (budget != null && budget.CurrentSpending + request.Amount > budget.MonthlyLimit)
-            throw new InvalidOperationException(
-                $"Expense of {request.Amount:C} would exceed the monthly budget limit of {budget.MonthlyLimit:C}.");
+        Budget? budget = null;
+
+        if (request.BudgetId.HasValue)
+        {
+            budget = await _unitOfWork.Budgets.GetByIdAsync(request.BudgetId.Value);
+            if (budget != null && budget.CurrentSpending + request.Amount > budget.MonthlyLimit)
+                throw new InvalidOperationException(
+                    $"Expense of {request.Amount:C} would exceed the monthly budget limit of {budget.MonthlyLimit:C}.");
+        }
 
         var expense = new Expense
         {
             Id = Guid.NewGuid(),
             UserId = request.UserId,
-            Description = request.Description,
+            BudgetId = budget?.Id,
+            Description = request.Title.Length > 0 ? request.Title : request.Description,
             Amount = request.Amount,
             Category = request.Category,
             ExpenseDate = request.ExpenseDate,
@@ -38,7 +44,6 @@ public class ExpenseService
 
         if (budget != null)
         {
-            expense.BudgetId = budget.Id;
             budget.CurrentSpending += request.Amount;
             budget.UpdatedAt = DateTime.UtcNow;
 
